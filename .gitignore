@@ -3,3 +3,10 @@ build/
 
 # Executable files
 *.exe
+main
+
+# VS Code workspace files
+.vscode/
+
+# Config files
+*.conf
