@@ -10,3 +10,4 @@ main
 
 # Config files
 *.conf
+*.conf.bak
