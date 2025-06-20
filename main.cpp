@@ -174,9 +174,10 @@ int chooseUSB() {
 
   devices.clear();
 
-  std::ofstream configFile("usbsync.conf", std::ios::app);
+  std::ofstream configFile("/etc/usbsync/usbsync.conf", std::ios::app);
 
   configFile << selectedDevice << std::endl;
+
   configFile.close();
   
   std::cout << "USB device saved to configuration file." << std::endl;
@@ -186,11 +187,10 @@ int chooseUSB() {
 
 void generateConfigFile() {
 
-  if (fs::exists("usbsync.conf")) {
+  if (fs::exists("/etc/usbsync/usbsync.conf")) {
     return;
   }
-
-  std::ofstream configFile("usbsync.conf");
+  
   std::cout << "Generating configuration file usbsync.conf..." << std::endl;
   std::cout << "Enter your linux username: ";
 
@@ -198,16 +198,16 @@ void generateConfigFile() {
     
   std::cin >> username;
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  configFile << "/home/" << username << "/Documents" << std::endl;
     
   std::cout << std::endl;
 
   std::cout << "Enter files or directories to exclude, blank line to finish. " << std::endl;
 
+  std::vector<std::string> excludes;
   std::string exclude;
   while (true) {
     std::getline(std::cin, exclude);
-    configFile << exclude << std::endl;
+    excludes.push_back(exclude);
     if (exclude.empty()) {
       break;
     }
@@ -215,19 +215,30 @@ void generateConfigFile() {
 
   std::cout << std::endl;
 
+  fs::create_directories("/etc/usbsync/");
+  std::ofstream configFile("/etc/usbsync/usbsync.conf");
+
+  for (const auto& ex : excludes) {
+    configFile << ex << std::endl;
+  }
+
+  configFile << "/home/" << username << "/Documents" << std::endl;
+
+  configFile.close();
+
   if (chooseUSB() != 0) {
     std::cerr << "Error: Failed to choose USB device." << std::endl;
+    fs::remove("/etc/usbsync/usbsync.conf");
     return;
   }
 
-  std::cout << "Configuration file created." << std::endl;
-  configFile.close();
+  std::cout << "Configuration file created.\n" << std::endl;  
 }
 
 std::vector<fs::path> readConfigFile() {
 
   std::vector<fs::path> paths;
-  std::ifstream configFile("usbsync.conf");
+  std::ifstream configFile("/etc/usbsync/usbsync.conf");
 
   std::string line;
 
@@ -247,12 +258,12 @@ int main() {
   generateConfigFile();
 
   std::vector<fs::path> excludePaths = readConfigFile();
-  fs::path documentsPath = excludePaths.front();
 
-  excludePaths.erase(excludePaths.begin());
   std::string usbUUID = excludePaths.back();
   excludePaths.pop_back();
 
+  fs::path documentsPath = excludePaths.back();
+  excludePaths.pop_back();
 
   if (DEBUG) return 0; // debug
 
@@ -270,6 +281,6 @@ int main() {
   }
 
   mountUSB(false, usbUUID);
-  std::cout << "Backup completed successfully." << std::endl;
+  std::cout << "\nBackup completed successfully." << std::endl;
   return 0;
 }
