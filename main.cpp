@@ -15,7 +15,10 @@ int mountUSB(bool mount, std::string UUID) { // true for mount, false for unmoun
   if (mount) {
     std::cout << "Mounting USB drive..." << std::endl;
 
-    // const char* cmd = ("sudo mount -U " + UUID + " /mnt/usbbackup").c_str();
+    if (!fs::is_directory("/mnt/usbbackup")) {
+      fs::create_directories("/mnt/usbbackup");
+    }
+
     result = std::system(("sudo mount -U " + UUID + " /mnt/usbbackup").c_str());
   }
   else {
@@ -53,14 +56,15 @@ int copyToUSB(const fs::path& source, const fs::path& destination, const std::ve
 
       if (!fs::exists(destinationPath) || fs::last_write_time(entry.path()) > fs::last_write_time(destinationPath)) {
         fs::copy_file(entry.path(), destinationPath, fs::copy_options::overwrite_existing);
-        //  std::cout << "Copied: " << entry.path() << " to " << destinationPath << '\n';
-         filesCopied++;
+
+        filesCopied++;
+        std::cout << "\rFiles copied: " << filesCopied << std::flush;
       }
     }
 
-    if (filesCopied != 0) {
-      std::cout << "Files copied: " << filesCopied << '\n';
-    } else {
+    std::cout << std::endl;
+
+    if (filesCopied == 0) {
       std::cout << "No new files to copy." << std::endl;
     }
     return 0;
