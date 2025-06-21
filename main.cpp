@@ -187,9 +187,7 @@ int chooseUSB() {
 
 void generateConfigFile() {
 
-  if (fs::exists("/etc/usbsync/usbsync.conf")) {
-    return;
-  }
+  if (fs::exists("/etc/usbsync/usbsync.conf")) return;
   
   std::cout << "Generating configuration file usbsync.conf..." << std::endl;
   std::cout << "Enter your linux username: ";
@@ -269,6 +267,7 @@ int main() {
 
   if (mountUSB(true, usbUUID) != 0) {
     std::cerr << "Error: Failed to mount USB drive." << std::endl;
+    mountUSB(false, usbUUID);
     return 1;
   }
 
