@@ -40,16 +40,11 @@ int copyToUSB(const fs::path& source, const fs::path& destination, const std::ve
     for (const fs::directory_entry& entry : fs::recursive_directory_iterator(source)) {      
       if (!entry.is_regular_file()) continue;
 
-      bool excluded = false;
       fs::path relative = fs::relative(entry.path(), source);
 
       for (const fs::path& excludedPath : excludePaths) {
-        if (fnmatch(excludedPath.string().c_str(), relative.string().c_str(), 0) == 0) {
-          excluded = true;
-          break;
-        }        
+        if (fnmatch(excludedPath.string().c_str(), relative.string().c_str(), 0) == 0) continue;
       }
-      if (excluded) continue;
 
       fs::path destinationPath = destination / relative;
       fs::create_directories(destinationPath.parent_path());
