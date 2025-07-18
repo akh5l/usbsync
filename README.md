@@ -16,10 +16,23 @@ A C++ program written for Linux that detects USB insertion and automatically syn
 3. Mounts desired USB
 4. Walks the source folder and copies new/updated files to USB target path
 
+## Installing Dependencies
+
+This program only requires a valid C++ compiler and CMake.
+
+Debian-based distros:
+```bash
+sudo apt install g++ cmake
+```
+
+Arch Linux based distros:
+```bash
+pacman -Syu && pacman -S g++ cmake
+```
+
 ## Build & Run (Linux)
 
 ```bash
-sudo apt install libudev-dev g++ cmake
 git clone https://github.com/akh5l/usbsync.git
 cd usbsync
 mkdir build && cd build
