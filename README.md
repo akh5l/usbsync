@@ -27,7 +27,7 @@ sudo apt install g++ cmake
 
 Arch Linux based distros:
 ```bash
-pacman -Syu && pacman -S g++ cmake
+sudo pacman -Syu g++ cmake
 ```
 
 ## Build & Run (Linux)
