@@ -1,4 +1,4 @@
-# USB Auto Backup Tool
+# USBSync (USB Auto Backup Tool)
 
 A C++ program written for Linux that automatically syncs specified directories from `~/Documents` to a USB drive. Designed for simple offline backups without cloud dependency.
 
