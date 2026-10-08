@@ -284,7 +284,8 @@ int unmountUSB(const fs::path &mountPoint) {
 // TODO: account for USB removal during copying
 // by copying to a temp dir, maybe checking a hash, then moving
 // TODO: account for files being deleted from source after last backup
-// TODO: account for files being deleted during backup, maybe by checking a hash of the source dir before and after
+// TODO: account for files being deleted during backup, maybe by checking a hash
+// of the source dir before and after
 int copyToUSB(const fs::path &source, const fs::path &destination) {
   if (!fs::exists(source)) {
     std::cerr << "Source path does not exist: " << source << std::endl;
@@ -367,7 +368,7 @@ int main() {
 
   if (!wasMounted) {
     mountPath = "/mnt/usbsync";
-    if (!mountUSB(UUID, mountPath)) {
+    if (mountUSB(UUID, mountPath) != 0) {
       std::cerr << "Error: Failed to mount USB drive." << std::endl;
       return 1;
     }
@@ -388,8 +389,8 @@ int main() {
     if (copyToUSB(sourcePath, destinationPath) != 0) {
       std::cerr << "Error: Failed to copy " << sourcePath << std::endl;
 
-      if (!wasMounted) {
-        unmountUSB(mountPath);
+      if (!wasMounted && unmountUSB(mountPath) != 0) {
+        std::cerr << "Error: Failed to unmount USB drive." << std::endl;
       }
       return 1;
     }
@@ -400,6 +401,11 @@ int main() {
     return 1;
   }
 
+  if (wasMounted) {
+    std::cout
+        << "Not unmounting as the device was mounted before sync started..."
+        << std::endl;
+  }
   std::cout << "Backup completed successfully." << std::endl;
   return 0;
 }
