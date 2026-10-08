@@ -19,7 +19,8 @@ A C++ program written for Linux that automatically syncs specified directories f
 
 ## Usage
 
-This program must be ran as a superuser (with `sudo`) as it writes a config file to `/etc/` and writes files to `/mnt/`.  
+This program must be ran as a superuser (with `sudo`) as it writes a config file to `/etc/` and writes files to `/mnt/`.  This will be changed soon, by switching to a D-Bus implementation and storing config in `~/.config`.  
+
 Before setting it up as a systemd service, it must be ran manually with `sudo ./usbsync` once to set up the configuration file.
 
 The systemd unit files should then be created as follows.  

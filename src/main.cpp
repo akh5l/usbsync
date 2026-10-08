@@ -9,6 +9,15 @@
 
 #define DEBUG 0 // set to 1 to skip actual backup process
 
+// TODO: what happens when:
+
+    // the USB disappears halfway through
+    // a file is deleted during synchronization
+    // the destination runs out of space
+    // the process gets killed halfway through
+    // the same file exists on both sides
+    // the USB is read-only
+
 namespace fs = std::filesystem;
 
 bool isUSBConnected(std::string UUID) {
