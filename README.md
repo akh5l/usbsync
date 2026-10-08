@@ -17,29 +17,6 @@ A C++ program written for Linux that automatically syncs specified directories f
 3. Mounts desired USB
 4. Walks the source folder and copies new/updated files to USB target path
 
-## Installing Dependencies
-
-This program only requires a valid C++ compiler and CMake.
-
-Debian-based distros:
-```bash
-sudo apt install g++ cmake
-```
-
-Arch Linux based distros:
-```bash
-sudo pacman -Syu g++ cmake
-```
-
-## Build
-
-```bash
-git clone https://github.com/akh5l/usbsync.git
-cd usbsync
-mkdir build && cd build
-cmake ..
-make
-```
 ## Usage
 
 This program must be ran as a superuser (with `sudo`) as it writes a config file to `/etc/` and writes files to `/mnt/`.  
